@@ -6,7 +6,6 @@ This component provides support for virtual components.
 import logging
 import voluptuous as vol
 import asyncio
-from setuptools import util
 
 import homeassistant.helpers.config_validation as cv
 import homeassistant.helpers.device_registry as dr
@@ -240,9 +239,24 @@ def get_entity_from_domain(hass, domain, entity_id):
 
 
 async def async_virtual_set_availability_service(hass, call):
+    def strtobool(val):
+        """Convert a string representation of truth to true (1) or false (0).
+    
+        True values are 'y', 'yes', 't', 'true', 'on', and '1'; false values
+        are 'n', 'no', 'f', 'false', 'off', and '0'.  Raises ValueError if
+        'val' is anything else.
+        """
+        val = val.lower()
+        if val in ('y', 'yes', 't', 'true', 'on', '1'):
+            return 1
+        elif val in ('n', 'no', 'f', 'false', 'off', '0'):
+            return 0
+        else:
+            raise ValueError(f"invalid truth value {val!r}")
+            
     value = call.data['value']
     if type(value) is not bool:
-        value = bool(util.strtobool(value))
+        value = bool(strtobool(value))
 
     for entity_id in call.data['entity_id']:
         domain = entity_id.split(".")[0]
