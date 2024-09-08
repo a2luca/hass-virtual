@@ -6,7 +6,7 @@ This component provides support for virtual components.
 import logging
 import voluptuous as vol
 import asyncio
-from distutils import util
+from setuptools import util
 
 import homeassistant.helpers.config_validation as cv
 import homeassistant.helpers.device_registry as dr
